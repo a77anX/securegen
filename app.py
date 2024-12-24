@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import random
 import string
+import os
 
 app = Flask(__name__)
 
@@ -40,4 +41,9 @@ def index():
     return render_template('index.html', passphrase=passphrase, password=password)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Only run the Flask development server locally
+    if os.environ.get("FLASK_ENV") == "development":
+        app.run(debug=True)
+    else:
+        # This is for production, where Gunicorn should run the app
+        app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
